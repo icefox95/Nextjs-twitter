@@ -1,4 +1,5 @@
 import { SparklesIcon } from "@heroicons/react/outline"
+import Tweet from "./Tweet"
 
 const Feed = () => {
     return (
@@ -14,8 +15,7 @@ const Feed = () => {
                 </div>
             </div>
 
-            {/* <Tweet /> */}
-
+            <Tweet />
         </div>
     )
 }
