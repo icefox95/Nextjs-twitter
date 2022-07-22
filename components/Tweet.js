@@ -2,6 +2,15 @@ import { CalendarIcon, ChartBarIcon, EmojiHappyIcon, PhotographIcon, XIcon } fro
 import { useRef, useState } from "react"
 import "emoji-mart/css/emoji-mart.css"
 import { Picker } from "emoji-mart"
+import { 
+    addDoc,
+    collection,
+    doc,
+    serverTimestamp,
+    updateDoc,
+} from "firebase/firestore"
+import { getDownloadURL, ref, uploadString } from "firebase/storage"
+import {db, storage} from "../firebase"
 
 const Tweet = () => {
     const [input,setInput] = useState("")
@@ -10,8 +19,15 @@ const Tweet = () => {
     const [loading, setLoading] = useState(false)
     const filePickerRef = useRef(null)
 
-    const addImageToPost = () => {
+    const addImageToPost = (e) => {
+        const reader = new FileReader()
+        if(e.target.files[0]) {
+            reader.readAsDataURL(e.target.files[0])
+        }
 
+        reader.onload = (readerEvent) => {
+            setSelectedFile(readerEvent.target.result)
+        }
     }
 
     const addEmoji = (e) => {
@@ -22,15 +38,41 @@ const Tweet = () => {
         setInput(input + emoji)
     }
 
-    const sendPost = () => {
+    const sendPost = async () => {
         if (loading) return
         setLoading(true)
+
+        const docRef = await addDoc(collection(db,"posts"),{
+            /* id : session.user.uid,
+            username: session.user.name,
+            userImg: session.user.image,
+            tag: session.user.tag, */
+            text: input,
+            timestamp: serverTimestamp(),
+        })
         
+        const imageRef = ref(storage, `posts/${docRef.id}/image`)
+
+        if(selectedFile){
+            await uploadString(imageRef,selectedFile,"data_url").then(async ()=>{
+                const downloadURL = await getDownloadURL(imageRef)
+                await updateDoc(doc(db, "posts", docRef.id), {
+                    image: downloadURL,
+                })
+            })
+        }
+
+        setLoading(false)
+        setInput("")
+        setSelectedFile(null)
+        setShowEmojis(false)
     }
 
 
     return (
-        <div className={`border-b border-gray-700 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide`}>
+        <div 
+            className={`border-b border-gray-700 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide ${
+                loading && "opacity-60"}`}>
             <img 
                 src="https://w.namu.la/s/65f16c8a43c2bb416976fc927d42285e87ea837ba850f2cc8e554e8d01c3774ece8ebd55ba54942d5bb746c1392e4e28c4319cc46bfb13bc175b1da05121fb2466c750bcccf78e0fc6697b556fc6a8c576182007b91f118d392632831172e86c" 
                 alt="" 
@@ -54,9 +96,12 @@ const Tweet = () => {
 
                 {selectedFile && (
                     <div className="relative">
-                        <div className="absolute w-8 h-8 bg-[#15181c]
+                        <div
+                            className="absolute w-8 h-8 bg-[#15181c]
                             hover:bg-[#272c26] bg-opacity-75 rounded-full flex
-                            items-center top-1 left-1 cursor-pointer">
+                            items-center top-1 left-1 cursor-pointer"
+                            onClick={() => setSelectedFile(null)}
+                        >
                             <XIcon className="text-white h-5" />
                         </div>
                         <img 
@@ -68,7 +113,8 @@ const Tweet = () => {
                 )}
 
                 </div>
-                    <div className="flex items-center justify-between pt-2.5">
+                    {!loading && (
+                        <div className="flex items-center justify-between pt-2.5">
                         <div className="flex items-center">
                             <div 
                                 className="icon"
@@ -119,6 +165,7 @@ const Tweet = () => {
                             Tweet
                         </button>
                     </div>
+                    )}
                 </div>
             </div>
     )
