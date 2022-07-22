@@ -7,6 +7,7 @@ const Tweet = () => {
     const [input,setInput] = useState("")
     const [selectedFile, setSelectedFile] = useState(null)    
     const [showEmojis, setShowEmojis] = useState(false)
+    const [loading, setLoading] = useState(false)
     const filePickerRef = useRef(null)
 
     const addImageToPost = () => {
@@ -22,6 +23,8 @@ const Tweet = () => {
     }
 
     const sendPost = () => {
+        if (loading) return
+        setLoading(true)
         
     }
 
