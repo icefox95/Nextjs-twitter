@@ -5,8 +5,7 @@ import { getProviders, getSession, useSession } from "next-auth/react"
 import Login from '../components/Login'
 
 export default function Home({trendingResults, followResults, providers}) {
-  const { data: session } = useSession()
-
+  const { data : session } = useSession()
   if(!session) return <Login providers={providers} />
 
   return (

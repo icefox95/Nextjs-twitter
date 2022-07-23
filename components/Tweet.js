@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore"
 import { getDownloadURL, ref, uploadString } from "firebase/storage"
 import {db, storage} from "../firebase"
+import { useSession } from "next-auth/react"
 
 const Tweet = () => {
     const [input,setInput] = useState("")
@@ -18,6 +19,7 @@ const Tweet = () => {
     const [showEmojis, setShowEmojis] = useState(false)
     const [loading, setLoading] = useState(false)
     const filePickerRef = useRef(null)
+    const { data : session } = useSession()
 
     const addImageToPost = (e) => {
         const reader = new FileReader()
@@ -43,10 +45,10 @@ const Tweet = () => {
         setLoading(true)
 
         const docRef = await addDoc(collection(db,"posts"),{
-            /* id : session.user.uid,
+            id : session.user.uid,
             username: session.user.name,
             userImg: session.user.image,
-            tag: session.user.tag, */
+            tag: session.user.tag,
             text: input,
             timestamp: serverTimestamp(),
         })
@@ -74,7 +76,7 @@ const Tweet = () => {
             className={`border-b border-gray-700 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide ${
                 loading && "opacity-60"}`}>
             <img 
-                src="https://w.namu.la/s/65f16c8a43c2bb416976fc927d42285e87ea837ba850f2cc8e554e8d01c3774ece8ebd55ba54942d5bb746c1392e4e28c4319cc46bfb13bc175b1da05121fb2466c750bcccf78e0fc6697b556fc6a8c576182007b91f118d392632831172e86c" 
+                src={session.user.image}
                 alt="" 
                 className="h-11 w-11 rounded-full cursor-pointer"
             />
