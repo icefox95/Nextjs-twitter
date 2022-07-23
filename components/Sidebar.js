@@ -1,6 +1,6 @@
 import Image from "next/image"
 import SidebarLink from "./SidebarLink"
-import { DotsHorizontalIcon, HomeIcon } from "@heroicons/react/solid"
+import { HomeIcon } from "@heroicons/react/solid"
 import {
     HashtagIcon,
     BellIcon,
@@ -9,6 +9,7 @@ import {
     ClipboardListIcon,
     UserIcon,
     DotsCircleHorizontalIcon,
+    DotsHorizontalIcon,
 } from "@heroicons/react/outline"
 import { signOut, useSession } from "next-auth/react"
 

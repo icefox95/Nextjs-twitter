@@ -47,6 +47,6 @@ export async function getServerSideProps(context) {
       followResults,
       providers,
       session,
-    }
+    },
   }
 }
