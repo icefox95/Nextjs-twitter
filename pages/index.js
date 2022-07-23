@@ -6,6 +6,7 @@ import Login from '../components/Login'
 import Modal from '../components/Modal'
 import { useRecoilState } from "recoil"
 import { modalState } from '../atoms/modalAtom'
+import Widgets from '../components/Widgets'
 
 export default function Home({trendingResults, followResults, providers}) {
   const { data : session } = useSession()
@@ -16,15 +17,17 @@ export default function Home({trendingResults, followResults, providers}) {
   return (
     <div>
       <Head>
-        <title>Twitter Clone</title>
+        <title>Bwitter(Twitter Clone)</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="bg-black flex max-w-[1500px] mx-auto">
         <Sidebar />
         <Feed />
         {session.user.name}
-        { /* Widgets */}
-
+        <Widgets 
+          trendingResults={trendingResults} 
+          followResults={followResults} 
+        />
         {isOpen && <Modal />}
       </main>
     </div>

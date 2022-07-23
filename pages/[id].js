@@ -18,6 +18,7 @@ import Sidebar from '../components/Sidebar'
 import Post from "../components/Post"
 import Login from "../components/Login"
 import Comment from "../components/Comment"
+import Widgets from "../components/Widgets"
 
 function PostPage({trendingResults, followResults, providers}) {
     const { data : session } = useSession()
@@ -85,7 +86,10 @@ function PostPage({trendingResults, followResults, providers}) {
                     </div>
                 )}
             </div>
-            { /* Widgets */}
+            <Widgets
+                trendingResults={trendingResults}
+                followResults={followResults}
+            />
     
             {isOpen && <Modal />}
             </main>
